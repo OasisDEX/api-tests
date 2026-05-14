@@ -1,0 +1,20 @@
+{
+	"name": "api-tests",
+	"version": "1.0.0",
+	"description": "",
+	"main": "index.js",
+	"scripts": {
+		"test:sdk": "pnpm exec playwright test --project=sdk"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"devDependencies": {
+		"@playwright/test": "^1.60.0",
+		"@types/node": "^25.7.0",
+		"typescript": "^6.0.3"
+	},
+	"dependencies": {
+		"@summer_fi/sdk-client": "^2.3.0"
+	}
+}
