@@ -13,11 +13,6 @@ export default defineConfig({
 		// baseURL: 'https://api.example.com',
 	},
 	projects: [
-		// {
-		// 	name: 'api',
-		// 	use: {},
-		// },
-
 		{
 			name: 'sdk',
 			testDir: './tests/sdk',
