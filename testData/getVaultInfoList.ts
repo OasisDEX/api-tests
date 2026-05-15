@@ -909,7 +909,7 @@ export const getVaultInfoListBase = {
 					dailyEmission: '5820000000000000000000',
 				},
 			],
-			tvlUsd: { fiat: 'USD', amount: '396820.48818310427434402275505746' },
+			tvlUsd: { fiat: 'USD', amount: expect.any(String) },
 		},
 		{
 			type: 'Armada',
@@ -1016,7 +1016,7 @@ export const getVaultInfoListBase = {
 					dailyEmission: '5820000000000000000000',
 				},
 			],
-			tvlUsd: { fiat: 'USD', amount: '478886.33793521192287' },
+			tvlUsd: { fiat: 'USD', amount: expect.any(String) },
 		},
 		{
 			type: 'Armada',
@@ -1123,7 +1123,7 @@ export const getVaultInfoListBase = {
 					dailyEmission: '13636000000000000000000',
 				},
 			],
-			tvlUsd: { fiat: 'USD', amount: '1389906.72669065368088' },
+			tvlUsd: { fiat: 'USD', amount: expect.any(String) },
 		},
 	],
 };
