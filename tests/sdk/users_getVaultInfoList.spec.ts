@@ -57,7 +57,7 @@ test.describe('getVaultInfoList', () => {
 	});
 });
 
-test.describe.only('getVaultInfoList - Negative scenarios ', () => {
+test.describe('getVaultInfoList - Negative scenarios ', () => {
 	test('"chainId" undefined', async () => {
 		try {
 			await sdk.armada.users.getVaultInfoList({
