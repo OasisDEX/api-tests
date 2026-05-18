@@ -1,11 +1,17 @@
 import { test, expect } from '@playwright/test';
-import { IArmadaVaultInfo, ArmadaVaultId, IArmadaVaultId } from '@summer_fi/sdk-client';
+import { IArmadaVaultInfo } from '@summer_fi/sdk-client';
 import { sdk } from '../../utils';
 import {
 	getVaultInfoBaseETH,
 	getVaultInfoBaseEURC,
 	getVaultInfoBaseUSDC,
+	getVaultInfoMainnetBaETH_HR,
+	getVaultInfoMainnetBaETH_LR,
+	getVaultInfoMainnetBaUSDC_HR,
+	getVaultInfoMainnetBaUSDC_LR,
+	getVaultInfoMainnetBaUSDT,
 	getVaultInfoMainnetDaoETH,
+	getVaultInfoMainnetDaoUSDC,
 } from '../../testData/getVaultInfo';
 
 let mainnetVaultsInfo: {
@@ -24,7 +30,7 @@ test.describe('getVaultInfo - Mainnet ', () => {
 	});
 
 	test('Response for Mainnet DAO ETH should match snapshot', async () => {
-		// Call the API with Mainnet ETH vault id
+		// Call the API with Mainnet DAO ETH vault id
 		const response = await sdk.armada.users.getVaultInfo({
 			vaultId: mainnetVaultsInfo.list[0].id,
 		});
@@ -32,6 +38,72 @@ test.describe('getVaultInfo - Mainnet ', () => {
 		// Validate the response
 		expect(response, 'The response should be defined').toBeDefined();
 		expect(response).toMatchObject(getVaultInfoMainnetDaoETH);
+	});
+
+	test('Response for Mainnet DAO USDC should match snapshot', async () => {
+		// Call the API with Mainnet DAO USDC vault id
+		const response = await sdk.armada.users.getVaultInfo({
+			vaultId: mainnetVaultsInfo.list[5].id,
+		});
+
+		// Validate the response
+		expect(response, 'The response should be defined').toBeDefined();
+		expect(response).toMatchObject(getVaultInfoMainnetDaoUSDC);
+	});
+
+	test('Response for Mainnet BA ETH HR should match snapshot', async () => {
+		// Call the API with Mainnet BA ETH HR vault id
+		const response = await sdk.armada.users.getVaultInfo({
+			vaultId: mainnetVaultsInfo.list[2].id,
+		});
+
+		// Validate the response
+		expect(response, 'The response should be defined').toBeDefined();
+		expect(response).toMatchObject(getVaultInfoMainnetBaETH_HR);
+	});
+
+	test('Response for Mainnet BA ETH LR should match snapshot', async () => {
+		// Call the API with Mainnet BA ETH LR vault id
+		const response = await sdk.armada.users.getVaultInfo({
+			vaultId: mainnetVaultsInfo.list[3].id,
+		});
+
+		// Validate the response
+		expect(response, 'The response should be defined').toBeDefined();
+		expect(response).toMatchObject(getVaultInfoMainnetBaETH_LR);
+	});
+
+	test('Response for Mainnet BA USDC LR should match snapshot', async () => {
+		// Call the API with Mainnet BA USDC LR vault id
+		const response = await sdk.armada.users.getVaultInfo({
+			vaultId: mainnetVaultsInfo.list[4].id,
+		});
+
+		// Validate the response
+		expect(response, 'The response should be defined').toBeDefined();
+		expect(response).toMatchObject(getVaultInfoMainnetBaUSDC_LR);
+	});
+
+	test('Response for Mainnet BA USDC HR should match snapshot', async () => {
+		// Call the API with Mainnet BA USDC HR vault id
+		const response = await sdk.armada.users.getVaultInfo({
+			vaultId: mainnetVaultsInfo.list[6].id,
+		});
+
+		// Validate the response
+		expect(response, 'The response should be defined').toBeDefined();
+		expect(response).toMatchObject(getVaultInfoMainnetBaUSDC_HR);
+	});
+
+	test('Response for Mainnet BA USDT should match snapshot', async () => {
+		// Call the API with Mainnet BA USDT vault id
+		const response = await sdk.armada.users.getVaultInfo({
+			vaultId: mainnetVaultsInfo.list[1].id,
+		});
+
+		// Validate the response
+		expect(response, 'The response should be defined').toBeDefined();
+		expect(response).toMatchObject(getVaultInfoMainnetBaUSDT);
 	});
 });
 
@@ -74,5 +146,64 @@ test.describe('getVaultInfo - Base ', () => {
 		// Validate the response
 		expect(response, 'The response should be defined').toBeDefined();
 		expect(response).toMatchObject(getVaultInfoBaseUSDC);
+	});
+});
+
+test.describe('getVaultInfo - Negative scenarios ', () => {
+	test('"vaultId" undefined', async () => {
+		try {
+			await sdk.armada.users.getVaultInfo({
+				// @ts-ignore
+				vaultId: undefined,
+			});
+			// If no error is thrown, the test should fail
+			throw new Error('Should have thrown a TRPCClientError');
+		} catch (error: any) {
+			// Assert the error type
+			expect(error.name).toBe('TRPCClientError');
+
+			// Assert the TRPC error data
+			expect(error.data).toMatchObject({
+				code: 'BAD_REQUEST',
+				httpStatus: 400,
+			});
+
+			// Assert the content of the error message (Zod validation error)
+			const message = JSON.parse(error.message);
+			expect(message[0]).toMatchObject({
+				code: 'custom',
+				message: 'Invalid input',
+				path: ['vaultId'],
+			});
+		}
+	});
+
+	test('"vaultId" invalid', async () => {
+		try {
+			await sdk.armada.users.getVaultInfo({
+				// @ts-ignore
+				vaultId: '0x0000000000000000000000000000000000000000',
+			});
+
+			// If no error is thrown, the test should fail
+			throw new Error('Should have thrown a TRPCClientError');
+		} catch (error: any) {
+			// Assert the error type
+			expect(error.name).toBe('TRPCClientError');
+
+			// Assert the TRPC error data
+			expect(error.data).toMatchObject({
+				code: 'BAD_REQUEST',
+				httpStatus: 400,
+			});
+
+			// Assert the content of the error message (Zod validation error)
+			const message = JSON.parse(error.message);
+			expect(message[0]).toMatchObject({
+				code: 'custom',
+				message: 'Invalid input',
+				path: ['vaultId'],
+			});
+		}
 	});
 });
