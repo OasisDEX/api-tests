@@ -1,6 +1,5 @@
-import { test, expect } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 import { IArmadaVaultInfo } from '@summer_fi/sdk-client';
-import { sdk } from '../../utils';
 import {
 	getVaultInfoBaseETH,
 	getVaultInfoBaseEURC,
@@ -13,6 +12,7 @@ import {
 	getVaultInfoMainnetDaoETH,
 	getVaultInfoMainnetDaoUSDC,
 } from '../../testData/getVaultInfo';
+import { sdk } from '../../utils';
 
 let mainnetVaultsInfo: {
 	list: IArmadaVaultInfo[];
