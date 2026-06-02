@@ -155,7 +155,7 @@ test.describe('getUserPosition', () => {
 			value: '0x98c49e13bf99d7cad8069faa2a370933ec9ecf17',
 		});
 
-		// Retrieve all user positions on Mainnet
+		// Retrieve Mainnet USDC LR user position
 		const position = await sdk.armada.users.getUserPosition({
 			user,
 			fleetAddress,
@@ -187,7 +187,7 @@ test.describe('getUserPosition', () => {
 			value: '0xe9cda459bed6dcfb8ac61cd8ce08e2d52370cb06',
 		});
 
-		// Retrieve all user positions on Mainnet
+		// Retrieve BA Mainnet USDC HR user position
 		const position = await sdk.armada.users.getUserPosition({
 			user,
 			fleetAddress,
@@ -219,15 +219,11 @@ test.describe('getUserPosition', () => {
 			value: '0xd77f9a9f2b0c160db3e9dc2cce370c1a740c76fc',
 		});
 
-		// Retrieve all user positions on Mainnet
+		// Retrieve DAO Mainnet USDC HR user position
 		const position = await sdk.armada.users.getUserPosition({
 			user,
 			fleetAddress,
 		});
-
-		//
-		console.log('== position: ', position?.shares);
-		//
 
 		// Validate the response
 		expect(position, 'The response should be defined').toBeDefined();
@@ -255,7 +251,7 @@ test.describe('getUserPosition', () => {
 			value: '0x67e536797570b3d8919df052484273815a0ab506',
 		});
 
-		// Retrieve all user positions on Mainnet
+		// Retrieve Mainnet ETH LR user position
 		const position = await sdk.armada.users.getUserPosition({
 			user,
 			fleetAddress,
@@ -287,7 +283,7 @@ test.describe('getUserPosition', () => {
 			value: '0x2e6abcbcced9af05bc3b8a4908e0c98c29a88e10',
 		});
 
-		// Retrieve all user positions on Mainnet
+		// Retrieve BA Mainnet ETH HR user position
 		const position = await sdk.armada.users.getUserPosition({
 			user,
 			fleetAddress,
@@ -319,7 +315,7 @@ test.describe('getUserPosition', () => {
 			value: '0x98c49e13bf99d7cad8069faa2a370933ec9ecf17',
 		});
 
-		// Retrieve all user positions on Mainnet
+		// Retrieve Base USDC user position
 		const position = await sdk.armada.users.getUserPosition({
 			user,
 			fleetAddress,
@@ -351,7 +347,7 @@ test.describe('getUserPosition', () => {
 			value: '0x2bb9ad69feba5547b7cd57aafe8457d40bf834af',
 		});
 
-		// Retrieve all user positions on Mainnet
+		// Retrieve Base ETH user position
 		const position = await sdk.armada.users.getUserPosition({
 			user,
 			fleetAddress,
@@ -383,7 +379,7 @@ test.describe('getUserPosition', () => {
 			value: '0x64db8f51f1bf7064bb5a361a7265f602d348e0f0',
 		});
 
-		// Retrieve all user positions on Mainnet
+		// Retrieve Base EURC user position
 		const position = await sdk.armada.users.getUserPosition({
 			user,
 			fleetAddress,
@@ -405,21 +401,113 @@ test.describe('getUserPosition', () => {
 	});
 });
 
-// SKIP - TODO
-// test.describe('getUserPositions - Negative scenarios', () => {
-// 	test('User undefined', async () => {
-// 		try {
-// 			await sdk.armada.users.getUserPositions({
-// 				// @ts-ignore
-// 				user: undefined,
-// 			});
-// 			throw new Error('Should have thrown a TRPCClientError');
-// 		} catch (error: any) {
-// 			expect(error.name).toBe('TRPCClientError');
-// 			expect(error.data).toMatchObject({
-// 				code: 'BAD_REQUEST',
-// 				httpStatus: 400,
-// 			});
-// 		}
-// 	});
-// });
+test.describe('getUserPosition - Negative scenarios', () => {
+	test('user undefined', async () => {
+		const fleetAddress = Address.createFromEthereum({
+			value: '0x64db8f51f1bf7064bb5a361a7265f602d348e0f0',
+		});
+
+		try {
+			await sdk.armada.users.getUserPosition({
+				// @ts-ignore
+				user: undefined,
+				fleetAddress,
+			});
+			throw new Error('Should have thrown a TRPCClientError');
+		} catch (error: any) {
+			// Assert the error type
+			expect(error.name).toBe('TRPCClientError');
+
+			// Assert the TRPC error data
+			expect(error.data).toMatchObject({
+				code: 'BAD_REQUEST',
+				httpStatus: 400,
+			});
+
+			// Assert the content of the error message
+			const message = JSON.parse(error.message);
+			expect(message[0]).toMatchObject({
+				code: 'custom',
+				message: 'Invalid input',
+				path: ['user'],
+			});
+		}
+	});
+
+	test('fleetAddress undefined', async () => {
+		const user = User.createFromEthereum(
+			ChainIds.Base,
+			'0x10649c79428d718621821Cf6299e91920284743F',
+		);
+
+		try {
+			await sdk.armada.users.getUserPosition({
+				user,
+				// @ts-ignore
+				fleetAddress: undefined,
+			});
+			throw new Error('Should have thrown a TRPCClientError');
+		} catch (error: any) {
+			// Assert the error type
+			expect(error.name).toBe('TRPCClientError');
+
+			// Assert the TRPC error data
+			expect(error.data).toMatchObject({
+				code: 'BAD_REQUEST',
+				httpStatus: 400,
+			});
+
+			// Assert the content of the error message
+			const message = JSON.parse(error.message);
+			expect(message[0]).toMatchObject({
+				code: 'custom',
+				message: 'Invalid input',
+				path: ['fleetAddress'],
+			});
+		}
+	});
+
+	test('user does not have position for given fleetAddress', async () => {
+		const user = User.createFromEthereum(
+			ChainIds.Base,
+			'0x10649c79428d718621821Cf6299e91920284743F',
+		);
+
+		const fleetAddress = Address.createFromEthereum({
+			value: '0x64db8f51f1bf7064bb5a361a7265f602d348e0f0',
+		});
+
+		try {
+			await sdk.armada.users.getUserPosition({
+				user,
+				fleetAddress,
+			});
+			throw new Error('Should have thrown a TRPCClientError');
+		} catch (error: any) {
+			// Assert the error type
+			expect(error.name).toBe('Error');
+		}
+	});
+
+	test('fleetAddress does not match user`s network', async () => {
+		const user = User.createFromEthereum(
+			ChainIds.Mainnet,
+			'0x10649c79428d718621821Cf6299e91920284743F',
+		);
+
+		const fleetAddress = Address.createFromEthereum({
+			value: '0x64db8f51f1bf7064bb5a361a7265f602d348e0f0',
+		});
+
+		try {
+			await sdk.armada.users.getUserPosition({
+				user,
+				fleetAddress,
+			});
+			throw new Error('Should have thrown a TRPCClientError');
+		} catch (error: any) {
+			// Assert the error type
+			expect(error.name).toBe('Error');
+		}
+	});
+});
