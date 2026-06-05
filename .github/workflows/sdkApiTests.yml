@@ -2,6 +2,9 @@ name: SDK API Tests
 
 on: workflow_dispatch
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
+
 jobs:
   test:
     timeout-minutes: 60
@@ -21,8 +24,6 @@ jobs:
         run: pnpm install
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-      # - name: Install Playwright Browsers
-      #   run: pnpm exec playwright install --with-deps
       - name: Run Playwright tests
         run: pnpm test:sdk
         env:
