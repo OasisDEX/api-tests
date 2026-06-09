@@ -35,7 +35,7 @@ export const getVaultInfoListMainnet = {
 					address: { value: '0x0c1fbccc019320032d9acd193447560c8c632114', type: 'Ethereum' },
 					decimals: 18,
 				},
-				amount: '0',
+				amount: '5000',
 				_baseUnitFactor: '1000000000000000000',
 			},
 			totalDeposits: {

@@ -627,7 +627,7 @@ export const getVaultInfoMainnetDaoETH = {
 			},
 			decimals: 18,
 		},
-		amount: '0',
+		amount: '5000',
 		_baseUnitFactor: '1000000000000000000',
 	},
 	totalDeposits: {
